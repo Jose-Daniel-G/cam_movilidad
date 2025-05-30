@@ -1,0 +1,196 @@
+<div class="app-wrapper">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <h3 class="mb-0">Formulario Dinámico</h3>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Formulario Dinámico</li>
+          </ol>
+        </div>
+      </div>
+      </div>
+    </div>
+  <div class="app-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="bi bi-pencil-square"></i>
+                {{ formularioData?.nombre || 'Cargando Formulario...' }} </h3>
+            </div>
+            <div class="card-body">
+
+              <div *ngIf="isLoading" class="text-center">
+                <p>Cargando formulario...</p>
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+
+              <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading && formularioData">
+                <div class="row">
+                  <ng-container *ngFor="let pregunta of formularioData.preguntas">
+                    <ng-container *ngIf="pregunta.tipo !== 'OCULTO' && pregunta.tipo !== 'CODIGOBARRAS' && pregunta.tipo !== 'FORMULARIO_ID'">
+                      <div [ngClass]="getColClasses(pregunta.longitud)" class="mb-3">
+                        <label [for]="pregunta.nombre" class="form-label">{{ pregunta.etiqueta }}</label>
+                        <div [ngSwitch]="pregunta.tipo">
+
+                          <ng-container *ngSwitchCase="'TEXTO'">
+                            <input
+                              type="text"
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-control"
+                              [placeholder]="pregunta.descripcion || ''"
+                              [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'NUMERICO'">
+                            <input
+                              type="number"
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-control"
+                              [placeholder]="pregunta.descripcion || ''"
+                              [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'CORREO'">
+                            <input
+                              type="email"
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-control"
+                              [placeholder]="pregunta.descripcion || ''"
+                              [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'FECHA'">
+                            <input
+                              type="date"
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-control"
+                              [placeholder]="pregunta.descripcion || ''"
+                              [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'HORA'">
+                            <input
+                              type="time"
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-control"
+                              [placeholder]="pregunta.descripcion || ''"
+                              [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'LISTA'">
+                            <select
+                              [id]="pregunta.nombre"
+                              [formControlName]="pregunta.nombre"
+                              class="form-select"
+                              [disabled]="pregunta.sololectura === 'SI'" >
+                              <option [value]="null" disabled selected>Seleccione una opción</option>
+                              <option *ngFor="let opcion of getOptionsForQuestion(pregunta.idPregunta)" [value]="opcion.idOpcion">
+                                {{ opcion.etiqueta }}
+                              </option>
+                            </select>
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'CHEQUEO'">
+                            <div class="form-check">
+                              <input
+                                type="checkbox"
+                                [id]="pregunta.nombre"
+                                [formControlName]="pregunta.nombre"
+                                class="form-check-input"
+                                [readonly]="pregunta.sololectura === 'SI'"
+                              />
+                              <label class="form-check-label" [for]="pregunta.nombre">
+                                {{ pregunta.descripcion || 'Marque si aplica' }}
+                              </label>
+                            </div>
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'DINEROSR'">
+                            <div class="input-group">
+                              <span class="input-group-text">$</span>
+                              <input
+                                type="text"
+                                [id]="pregunta.nombre"
+                                [formControlName]="pregunta.nombre"
+                                class="form-control"
+                                [placeholder]="pregunta.descripcion || '0.00'"
+                                [readonly]="pregunta.sololectura === 'SI'"
+                              />
+                            </div>
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'PLACA'">
+                            <input
+                                type="text"
+                                [id]="pregunta.nombre"
+                                [formControlName]="pregunta.nombre"
+                                class="form-control"
+                                [placeholder]="pregunta.descripcion || ''"
+                                [attr.maxlength]="pregunta.limiteCaracteres"
+                                [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'DIRECCION'">
+                            <input
+                                type="text"
+                                [id]="pregunta.nombre"
+                                [formControlName]="pregunta.nombre"
+                                class="form-control"
+                                [placeholder]="pregunta.descripcion || ''"
+                                [attr.maxlength]="pregunta.limiteCaracteres"
+                                [readonly]="pregunta.sololectura === 'SI'"
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'CALCULATED_WEBSERVICE'">
+                            <input
+                                type="text"
+                                [id]="pregunta.nombre"
+                                [formControlName]="pregunta.nombre"
+                                class="form-control"
+                                [placeholder]="pregunta.descripcion || ''"
+                                readonly
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchDefault>
+                            <p class="text-warning">Tipo de pregunta no soportado: {{ pregunta.tipo }}</p>
+                          </ng-container>
+
+                        </div> <div *ngIf="dynamicForm.get(pregunta.nombre)?.invalid && (dynamicForm.get(pregunta.nombre)?.dirty || dynamicForm.get(pregunta.nombre)?.touched)" class="text-danger mt-1">
+                          <div *ngIf="dynamicForm.get(pregunta.nombre)?.errors?.['required']">
+                            Este campo es requerido.
+                          </div>
+                          <div *ngIf="dynamicForm.get(pregunta.nombre)?.errors?.['email']">
+                            Ingrese un correo electrónico válido.
+                          </div>
+                          <div *ngIf="dynamicForm.get(pregunta.nombre)?.errors?.['pattern']">
+                            Ingrese un valor numérico válido.
+                          </div>
+                          <div *ngIf="pregunta.limiteCaracteres && dynamicForm.get(pregunta.nombre)?.errors?.['maxlength']">
+                            Máximo {{ pregunta.limiteCaracteres }} caracteres.
+                          </div>
+                          </div>
+
+                      </div> </ng-container> </ng-container> </div> <button type="submit" class="btn btn-primary" [disabled]="dynamicForm.invalid">Enviar Formulario</button>
+              </form> </div> </div> </div> </div> </div> </div> </div> 
