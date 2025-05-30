@@ -10,14 +10,14 @@ import { ApiResponse, FormularioData, Pregunta, OpcionPregunta } from '../models
 })
 export class FormularioService {
   private apiUrlOpcionesPregunta = 'https://servicios.cali.gov.co:9090/PortalApp/rest/api/Pregunta/getOpcionPregunta';
-  private apiUrlFormularioCompleto = 'https://servicios.cali.gov.co:9090/PortalApp/rest/api/Formulario/getFormularioCompleto';
+  private apiUrlFormularioCompleto = 'https://servicios.cali.gov.co:9090/PortalApp/rest/api/Formulario/getFormularioComplete';
 
   constructor(private http: HttpClient) {}
 
   // MODIFICADO: Tipo de retorno específico
   obtenerOpcionesPregunta(payload: { idFormulario: number; idPregunta: number }): Observable<ApiResponse> {
     const headers = new HttpHeaders({
-      'X-Auth': 'f6de84f4-2ffd-4ac0-8da8-a6281ff4ec11',
+      'X-Auth': '0bcdb907-faa1-4e12-a4af-481ff3ca4676',
       'Content-Type': 'application/json',
     });
     return this.http.post<ApiResponse>(this.apiUrlOpcionesPregunta, payload, { headers });
@@ -25,7 +25,7 @@ export class FormularioService {
 
   getFormularioCompleto(idFormulario: number): Observable<ApiResponse> {
     const headers = new HttpHeaders({
-      'X-Auth': '331bc870-1fb4-4526-b076-e52a1ef5763f',
+      'X-Auth': '0bcdb907-faa1-4e12-a4af-481ff3ca4676',
       'Content-Type': 'application/json',
     });
     const payload = { idFormulario: idFormulario };
