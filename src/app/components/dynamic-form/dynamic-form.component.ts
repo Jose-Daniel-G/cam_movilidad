@@ -1,18 +1,46 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { CommonModule, NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common'; // Explicitly importing NgFor, NgIf etc.
+import { CommonModule, NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { FormularioService } from '../../services/formulario.service';
 import { Pregunta, FormularioData, OpcionPregunta, ApiResponse } from '../../models/pregunta.model';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable, combineLatest } from 'rxjs';
+// Importar módulos de Angular Material que uses
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
   // Ensure all directives used in the template are imported here
-  imports: [CommonModule, ReactiveFormsModule, NgFor, NgIf, NgSwitch, NgSwitchCase],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgFor,
+    NgIf,
+    NgSwitch,
+    NgSwitchCase,
+    MatFormFieldModule, // <--- ADD THIS
+    MatInputModule,     // <--- ADD THIS
+    MatSelectModule,    // <--- ADD THIS (if used in template)
+    MatCheckboxModule,  // <--- ADD THIS (if used in template)
+    MatRadioModule,     // <--- ADD THIS (if used in template)
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatCardModule,
+    MatProgressSpinnerModule
+  ],
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.css'] // Or .scss if that's what you use
+  styleUrls: ['./dynamic-form.component.css']
 })
 export class DynamicFormComponent implements OnInit {
   formularioData: FormularioData | null = null;
@@ -41,16 +69,16 @@ export class DynamicFormComponent implements OnInit {
 
   loadFormulario() {
     this.formularioService.getFormularioCompleto(this.formId!).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse) => { // Added type for response
         if (response.result === 'OK' && response.data) {
-          this.formularioData = response.data;
+          this.formularioData = response.data as FormularioData; // Added type for data
           this.loadPreguntaOptionsAndBuildForm();
         } else {
           console.error('API response not OK or data missing:', response);
           this.isLoading = false;
         }
       },
-      error: (error) => {
+      error: (error: any) => { // Added type for error
         console.error('Error fetching form data:', error);
         this.isLoading = false;
       }
@@ -63,10 +91,10 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
 
-    const listaPreguntas = this.formularioData.preguntas.filter(p => p.tipo === 'LISTA');
+    const listaPreguntas = this.formularioData.preguntas.filter((p: Pregunta) => p.tipo === 'LISTA'); // Added type for p
     const optionRequests: Observable<ApiResponse>[] = [];
 
-    listaPreguntas.forEach(pregunta => {
+    listaPreguntas.forEach((pregunta: Pregunta) => { // Added type for pregunta
       if (this.formId) {
         const payload = { idFormulario: this.formId, idPregunta: pregunta.idPregunta };
         optionRequests.push(this.formularioService.obtenerOpcionesPregunta(payload));
@@ -86,7 +114,7 @@ export class DynamicFormComponent implements OnInit {
           });
           this.buildForm();
         },
-        error: (error) => {
+        error: (error: any) => { // Added type for error
           console.error('Error fetching options for LISTA questions:', error);
           this.buildForm(); // Still build the form even if options fail, just without them
         }
@@ -101,7 +129,7 @@ export class DynamicFormComponent implements OnInit {
 
     const formGroupConfig: { [key: string]: any } = {};
 
-    this.formularioData.preguntas.forEach(pregunta => {
+    this.formularioData.preguntas.forEach((pregunta: Pregunta) => { // Added type for pregunta
       const validators = [];
       if (pregunta.requerido === 'SI') {
         validators.push(Validators.required);
@@ -125,7 +153,7 @@ export class DynamicFormComponent implements OnInit {
     this.dynamicForm = this.fb.group(formGroupConfig);
 
     // --- Manejo de funciones de webservice y calculadas (Lógica Avanzada) ---
-    this.formularioData.preguntas.forEach(pregunta => {
+    this.formularioData.preguntas.forEach((pregunta: Pregunta) => { // Added type for pregunta
       if (pregunta.funcion) {
         try {
           const funcConfig = JSON.parse(pregunta.funcion);
@@ -143,7 +171,7 @@ export class DynamicFormComponent implements OnInit {
               const dependentPregunta = this.formularioData?.preguntas.find(p => p.idPregunta === dependentPreguntaId);
 
               if (dependentPregunta) {
-                this.dynamicForm.get(dependentPregunta.nombre)?.valueChanges.subscribe(numMeses => {
+                this.dynamicForm.get(dependentPregunta.nombre)?.valueChanges.subscribe((numMeses: number) => { // Added type for numMeses
                   if (numMeses !== null && numMeses !== undefined) {
                     const valorCalculado = numMeses * 10000;
                     this.dynamicForm.get(pregunta.nombre)?.setValue(valorCalculado);
@@ -151,8 +179,8 @@ export class DynamicFormComponent implements OnInit {
                 });
                 const initialNumMeses = this.dynamicForm.get(dependentPregunta.nombre)?.value;
                 if (initialNumMeses !== null && initialNumMeses !== undefined) {
-                     const valorCalculado = initialNumMeses * 10000;
-                     this.dynamicForm.get(pregunta.nombre)?.setValue(valorCalculado);
+                  const valorCalculado = initialNumMeses * 10000;
+                  this.dynamicForm.get(pregunta.nombre)?.setValue(valorCalculado);
                 }
               }
             }
@@ -163,12 +191,12 @@ export class DynamicFormComponent implements OnInit {
               const controlsToWatch = idsToCheck.map((id: number) => {
                 const depPregunta = this.formularioData?.preguntas.find(p => p.idPregunta === id);
                 return depPregunta ? this.dynamicForm.get(depPregunta.nombre) : null;
-              }).filter((control: AbstractControl | null): control is AbstractControl => control !== null); // Corrected filter typing
+              }).filter((control: AbstractControl | null): control is AbstractControl => control !== null);
 
               if (controlsToWatch.length > 0) {
-                combineLatest(controlsToWatch.map((c: AbstractControl) => c.valueChanges)).subscribe(() => { // Corrected 'c' typing
+                combineLatest(controlsToWatch.map((c: AbstractControl) => c.valueChanges)).subscribe(() => {
                   let trueCount = 0;
-                  controlsToWatch.forEach((controlItem: AbstractControl) => { // Corrected 'controlItem' typing
+                  controlsToWatch.forEach((controlItem: AbstractControl) => {
                     if (controlItem?.value === true) {
                       trueCount++;
                     }
@@ -177,7 +205,7 @@ export class DynamicFormComponent implements OnInit {
                 });
 
                 let initialTrueCount = 0;
-                controlsToWatch.forEach((controlItem: AbstractControl) => { // Corrected 'controlItem' typing
+                controlsToWatch.forEach((controlItem: AbstractControl) => {
                   if (controlItem?.value === true) {
                     initialTrueCount++;
                   }
@@ -186,7 +214,7 @@ export class DynamicFormComponent implements OnInit {
               }
             }
           }
-        } catch (e) {
+        } catch (e: any) { // Added type for e
           console.error('Error parsing function JSON or implementing logic for', pregunta.nombre, e);
         }
       }
@@ -204,7 +232,7 @@ export class DynamicFormComponent implements OnInit {
       if (sizes.lg) classes += `col-lg-${sizes.lg} `;
       if (sizes.xl) classes += `col-xl-${sizes.xl} `;
       return classes.trim();
-    } catch (e) {
+    } catch (e: any) { // Added type for e
       console.error('Error parsing column classes JSON:', jsonString, e);
       return 'col-12';
     }
