@@ -1,5 +1,3 @@
-// src/app/models/pregunta.model.ts
-
 export interface Pregunta {
   nombre: string;
   descripcion: string; // This can serve as placeholder

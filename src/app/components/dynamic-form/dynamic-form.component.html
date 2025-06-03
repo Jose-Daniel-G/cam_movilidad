@@ -41,28 +41,26 @@
                                         <ng-container
                                             *ngIf="pregunta.tipo !== 'OCULTO' && pregunta.tipo !== 'CODIGOBARRAS' && pregunta.tipo !== 'FORMULARIO_ID'">
                                             <div [ngClass]="getColClasses(pregunta.longitud)" class="mb-3">
-                                                <label [for]="pregunta.nombre" class="form-label">{{ pregunta.etiqueta
-                                                    }}</label>
                                                 <div [ngSwitch]="pregunta.tipo">
 
                                                     <ng-container *ngSwitchCase="'TEXTO'">
                                                         <input type="text" [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-control"
-                                                            [placeholder]="pregunta.descripcion || ''"
+                                                            [placeholder]="pregunta.etiqueta || ''"
                                                             [readonly]="pregunta.sololectura === 'SI'" />
                                                     </ng-container>
 
                                                     <ng-container *ngSwitchCase="'NUMERICO'">
                                                         <input type="number" [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-control"
-                                                            [placeholder]="pregunta.descripcion || ''"
+                                                            [placeholder]="pregunta.etiqueta || ''"
                                                             [readonly]="pregunta.sololectura === 'SI'" />
                                                     </ng-container>
 
                                                     <ng-container *ngSwitchCase="'CORREO'">
                                                         <input type="email" [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-control"
-                                                            [placeholder]="pregunta.descripcion || ''"
+                                                            [placeholder]="pregunta.etiqueta || ''"
                                                             [readonly]="pregunta.sololectura === 'SI'" />
                                                     </ng-container>
 
@@ -84,10 +82,8 @@
                                                         <select [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-select"
                                                             [disabled]="pregunta.sololectura === 'SI'">
-                                                            <option [value]="null" disabled selected>Seleccione una
-                                                                opción</option>
-                                                            <option
-                                                                *ngFor="let opcion of getOptionsForQuestion(pregunta.idPregunta)"
+                                                            <option [value]="null" disabled selected>Seleccione una opción</option>
+                                                            <option *ngFor="let opcion of getOptionsForQuestion(pregunta.idPregunta)"
                                                                 [value]="opcion.idOpcion">
                                                                 {{ opcion.etiqueta }}
                                                             </option>
@@ -96,13 +92,15 @@
 
                                                     <ng-container *ngSwitchCase="'CHEQUEO'">
                                                         <div class="form-check">
+
+                                                            <label [for]="pregunta.nombre" class="form-label">{{
+                                                                pregunta.etiqueta
+                                                                }}</label>
                                                             <input type="checkbox" [id]="pregunta.nombre"
                                                                 [formControlName]="pregunta.nombre"
                                                                 class="form-check-input"
                                                                 [readonly]="pregunta.sololectura === 'SI'" />
-                                                            <label class="form-check-label" [for]="pregunta.nombre">
-                                                                {{ pregunta.descripcion || 'Marque si aplica' }}
-                                                            </label>
+
                                                         </div>
                                                     </ng-container>
 
@@ -111,7 +109,7 @@
                                                             <span class="input-group-text">$</span>
                                                             <input type="text" [id]="pregunta.nombre"
                                                                 [formControlName]="pregunta.nombre" class="form-control"
-                                                                [placeholder]="pregunta.descripcion || '0.00'"
+                                                                [placeholder]="pregunta.nombre || '0.00'"
                                                                 [readonly]="pregunta.sololectura === 'SI'" />
                                                         </div>
                                                     </ng-container>
@@ -119,7 +117,7 @@
                                                     <ng-container *ngSwitchCase="'PLACA'">
                                                         <input type="text" [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-control"
-                                                            [placeholder]="pregunta.descripcion || ''"
+                                                            [placeholder]="pregunta.etiqueta || ''"
                                                             [attr.maxlength]="pregunta.limiteCaracteres"
                                                             [readonly]="pregunta.sololectura === 'SI'" />
                                                     </ng-container>
@@ -127,20 +125,19 @@
                                                     <ng-container *ngSwitchCase="'DIRECCION'">
                                                         <input type="text" [id]="pregunta.nombre"
                                                             [formControlName]="pregunta.nombre" class="form-control"
-                                                            [placeholder]="pregunta.descripcion || ''"
+                                                            [placeholder]="pregunta.etiqueta || ''"
                                                             [attr.maxlength]="pregunta.limiteCaracteres"
                                                             [readonly]="pregunta.sololectura === 'SI'" />
                                                     </ng-container>
 
                                                     <ng-container *ngSwitchCase="'CALCULATED_WEBSERVICE'">
                                                         <input type="text" [id]="pregunta.nombre"
-                                                            [formControlName]="pregunta.nombre" class="form-control"
+                                                            [formControlName]="pregunta.etiqueta" class="form-control"
                                                             [placeholder]="pregunta.descripcion || ''" readonly />
                                                     </ng-container>
 
                                                     <ng-container *ngSwitchDefault>
-                                                        <p class="text-warning">Tipo de pregunta no soportado: {{
-                                                            pregunta.tipo }}</p>
+                                                        <p class="text-warning">Tipo de pregunta no soportado: {{ pregunta.tipo }}</p>
                                                     </ng-container>
 
                                                 </div>
