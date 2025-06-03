@@ -1,2 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @use "bootstrap/scss/bootstrap";
+
+::ng-deep mat-form-field.mat-form-field-appearance-outline {
+  .mat-form-field-outline {
+    border-color: #3f51b5 !important; /* color del borde */
+    border-width: 2px !important;    /* grosor del borde */
+    border-radius: 6px !important;   /* radio de borde redondeado */
+  }
+
+  .mat-form-field-outline-thick {
+    border-color: #303f9f !important; /* color cuando está enfocado */
+  }
+}
+
