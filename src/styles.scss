@@ -1,15 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 @use "bootstrap/scss/bootstrap";
 
-::ng-deep mat-form-field.mat-form-field-appearance-outline {
-  .mat-form-field-outline {
-    border-color: #3f51b5 !important; /* color del borde */
-    border-width: 2px !important;    /* grosor del borde */
-    border-radius: 6px !important;   /* radio de borde redondeado */
-  }
+// // Para que el outline de Angular Material se vea como el form-control de Bootstrap
+// // Estas reglas deben ir en tu archivo global styles.scss, DESPUÉS de todas tus importaciones.
 
-  .mat-form-field-outline-thick {
-    border-color: #303f9f !important; /* color cuando está enfocado */
-  }
-}
+// .mat-mdc-form-field-appearance-outline {
+//   // ... otras reglas ...
 
+//   // Target the actual outline container (el borde visual del input)
+//   .mat-mdc-form-field-outline {
+//     // Establece el color de borde por defecto similar a Bootstrap
+//     border-color: #ced4da; // Color de borde por defecto de Bootstrap
+//     border-width: 1px; // Asegura un borde de 1px como Bootstrap
+//     border-radius: 0.25rem; // <--- ESTA ES LA PROPIEDAD CLAVE PARA LAS ESQUINAS REDONDEADAS
+//   }
+
+//   // ... otras reglas para hover, focus, disabled ...
+// }

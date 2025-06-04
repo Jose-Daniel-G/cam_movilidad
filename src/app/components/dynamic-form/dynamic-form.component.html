@@ -19,57 +19,30 @@
                             <div [ngSwitch]="pregunta.tipo">
 
                                 <ng-container *ngSwitchCase="'TEXTO'">
-                                    <mat-form-field appearance="outline" class="full-width">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
-                                        <input matInput [formControlName]="pregunta.nombre"
-                                            [readonly]="pregunta.sololectura === 'SI'"
-                                            [required]="pregunta.requerido === 'SI'"
-                                            [attr.maxlength]="pregunta.limiteCaracteres" />
-
-                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            {{ pregunta.etiqueta }} es requerido.
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('email') && !dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            Ingrese un correo válido.
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern') && !dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            Formato incorrecto.
-                                        </mat-error>
-                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('maxlength')">
-                                            Máximo {{ pregunta.limiteCaracteres }} caracteres.
-                                        </mat-error>
+                                    <mat-form-field appearance="outline" [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta }}</mat-label>
+                                        <input  matInput [formControlName]="pregunta.nombre" [readonly]="pregunta.sololectura === 'SI'" [required]="pregunta.requerido === 'SI'" [attr.maxlength]="pregunta.limiteCaracteres" />
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')"> {{ pregunta.etiqueta }} es requerido.</mat-error>
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('email') && !dynamicForm.get(pregunta.nombre)?.hasError('required')"> Ingrese un correo válido.</mat-error>
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern') && !dynamicForm.get(pregunta.nombre)?.hasError('required')"> Formato incorrecto.</mat-error>
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('maxlength')">Máximo {{ pregunta.limiteCaracteres }} caracteres.</mat-error>
                                     </mat-form-field>
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'NUMERICO'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
-                                        <input matInput type="number" [formControlName]="pregunta.nombre"
-                                            [readonly]="pregunta.sololectura === 'SI'"
-                                            [required]="pregunta.requerido === 'SI'"
-                                            [attr.maxlength]="pregunta.limiteCaracteres" /> <mat-error
-                                            *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            {{ pregunta.etiqueta }} es requerido.
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern') && !dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            Ingrese solo números.
-                                        </mat-error>
-                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('maxlength')">
-                                            Máximo {{ pregunta.limiteCaracteres }} dígitos.
-                                        </mat-error>
+                                    <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta }}</mat-label>
+                                        <input matInput type="number" [formControlName]="pregunta.nombre" [readonly]="pregunta.sololectura === 'SI'" [required]="pregunta.requerido === 'SI'" [attr.maxlength]="pregunta.limiteCaracteres" /> 
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')"> {{ pregunta.etiqueta }} es requerido.</mat-error>
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern') && !dynamicForm.get(pregunta.nombre)?.hasError('required')"> Ingrese solo números.</mat-error>
+                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('maxlength')">Máximo {{ pregunta.limiteCaracteres }} dígitos.</mat-error>
                                     </mat-form-field>
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'CORREO'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
-                                        <input matInput type="email" [formControlName]="pregunta.nombre"
-                                            [readonly]="pregunta.sololectura === 'SI'"
-                                            [required]="pregunta.requerido === 'SI'"
-                                            [attr.maxlength]="pregunta.limiteCaracteres" />
+                                    <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || '' }}</mat-label>
+                                        <input matInput type="email" [formControlName]="pregunta.nombre" [readonly]="pregunta.sololectura === 'SI'" [required]="pregunta.requerido === 'SI'" [attr.maxlength]="pregunta.limiteCaracteres" />
 
                                         <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')">
                                             {{ pregunta.etiqueta }} es requerido.
@@ -85,8 +58,8 @@
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'FECHA'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
+                                    <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || '' }}</mat-label>
                                         <input matInput [matDatepicker]="picker" [formControlName]="pregunta.nombre"
                                             [readonly]="pregunta.sololectura === 'SI'"
                                             [required]="pregunta.requerido === 'SI'"
@@ -105,25 +78,27 @@
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'HORA'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
-                                        <input matInput type="time" [formControlName]="pregunta.nombre"
-                                            [readonly]="pregunta.sololectura === 'SI'"
-                                            [required]="pregunta.requerido === 'SI'" />
+                                    <div [ngClass]="getColClasses(pregunta.longitud)" class="mb-3">
+                                        <mat-form-field appearance="outline" class="w-100 form-control">
+                                            <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || '' }}</mat-label>
+                                            <input matInput type="time" [formControlName]="pregunta.nombre"
+                                                [readonly]="pregunta.sololectura === 'SI'"
+                                                [required]="pregunta.requerido === 'SI'" />
 
-                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')">
-                                            {{ pregunta.etiqueta }} es requerido.
-                                        </mat-error>
-                                        <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern')">
-                                            Formato de hora inválido.
-                                        </mat-error>
-                                    </mat-form-field>
+                                            <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('required')">
+                                                {{ pregunta.etiqueta }} es requerido.
+                                            </mat-error>
+                                            <mat-error *ngIf="dynamicForm.get(pregunta.nombre)?.hasError('pattern')">
+                                                Formato de hora inválido.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'LISTA'">
                                     <div [ngClass]="getColClasses(pregunta.longitud)" class="mb-3">
-                                        <mat-form-field appearance="outline" class="w-100">
-                                            <mat-label>{{ pregunta.etiqueta || 'Seleccione una opción' }}</mat-label>
+                                        <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                            <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || 'Seleccione una opción' }}</mat-label>
                                             <mat-select [formControlName]="pregunta.nombre"
                                                 [disabled]="pregunta.sololectura === 'SI'"
                                                 [required]="pregunta.requerido === 'SI'">
@@ -154,7 +129,7 @@
 
                                 <ng-container *ngSwitchCase="'DINEROSR'">
                                     <mat-form-field [ngClass]="getColClasses(pregunta.longitud)">
-                                        <mat-label>{{ pregunta.etiqueta || 'Monto' }}</mat-label> <span
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || 'Monto' }}</mat-label> <span
                                             matPrefix>$&nbsp;</span>
                                         <input matInput type="text" [formControlName]="pregunta.nombre"
                                             [readonly]="pregunta.sololectura === 'SI'"
@@ -175,8 +150,8 @@
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'PLACA'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
+                                    <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || '' }}</mat-label>
                                         <input matInput [formControlName]="pregunta.nombre"
                                             [readonly]="pregunta.sololectura === 'SI'"
                                             [required]="pregunta.requerido === 'SI'" [placeholder]="'ABC-123'"
@@ -193,8 +168,8 @@
 
                                 <ng-container *ngSwitchCase="'DIRECCION'">
                                     <div [ngClass]="getColClasses(pregunta.longitud)" class="mb-3">
-                                        <mat-form-field appearance="outline" class="w-100">
-                                            <mat-label>{{ pregunta.etiqueta || '' }}</mat-label>
+                                        <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                            <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || '' }}</mat-label>
                                             <input matInput [formControlName]="pregunta.nombre"
                                                 [readonly]="pregunta.sololectura === 'SI'"
                                                 [required]="pregunta.requerido === 'SI'"
@@ -211,8 +186,8 @@
                                 </ng-container>
 
                                 <ng-container *ngSwitchCase="'CALCULATED_WEBSERVICE'">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{ pregunta.etiqueta || pregunta.descripcion || '' }}</mat-label>
+                                    <mat-form-field appearance="outline"  [hideRequiredMarker]="pregunta.requerido === 'SI'" floatLabel="always">
+                                        <mat-label><span *ngIf="pregunta.requerido === 'SI'" style="color: red; font-weight: bolder;">*</span>{{ pregunta.etiqueta || pregunta.descripcion || '' }}</mat-label>
                                         <input matInput [formControlName]="pregunta.nombre" readonly />
                                     </mat-form-field>
                                 </ng-container>
